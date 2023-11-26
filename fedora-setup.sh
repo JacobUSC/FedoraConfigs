@@ -10,6 +10,22 @@ function set_configs() {
     echo 'max_parallel_downloads=10' | sudo tee -a /etc/dnf/dnf.conf
     echo 'fastestmirror=true' | sudo tee -a /etc/dnf/dnf.conf
     echo 'defaultyes=true' | sudo tee -a /etc/dnf/dnf.conf
+    echo "setting nano configs"
+    touch ~/.nanorc
+    echo 'set guidestrip 80' | tee -a ~/.nanorc
+    echo 'set linenumbers' | tee -a ~/.nanorc
+    echo 'set tabstospaces' | tee -a ~/.nanorc
+    echo 'set tabsize 4' | tee -a ~/.nanorc
+    echo 'set backup' | tee -a ~/.nanorc
+    echo 'set autoindent' | tee -a ~/.nanorc
+    echo "setting vim configs"
+    touch ~/.vimrc
+    echo 'syntax on' | tee -a ~/.vimrc
+    echo 'set ruler' | tee -a ~/.vimrc
+    echo 'set autoindent' | tee -a ~/.vimrc
+    echo 'set number' | tee -a ~/.vimrc
+    echo 'set ignorecase' | tee -a ~/.vimrc
+    echo 'color elflord' | tee -a ~/.vimrc
 }
 
 # updates software
@@ -155,7 +171,7 @@ function main() {
     install_true_type()
     install_codecs()
     install_software()
-    #isntall_nvidia()
+    #install_nvidia()
 }
 
 main()
