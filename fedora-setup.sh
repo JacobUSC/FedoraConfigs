@@ -38,9 +38,9 @@ function update_software() {
 # update firmware
 function update_firmware() {
     echo "updateing firmware"
-    sudo fwupdmgr get-devices 
-    sudo fwupdmgr refresh --force 
-    sudo fwupdmgr get-updates 
+    sudo fwupdmgr get-devices
+    sudo fwupdmgr refresh --force
+    sudo fwupdmgr get-updates
     sudo fwupdmgr update
 }
 
@@ -60,7 +60,7 @@ function remove_junk() {
 # enables rpm fusions
 function enable_rpmfusions() {
     echo "enabling rpm fusions"
-    sudo dnf install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm 
+    sudo dnf install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
     sudo dnf install https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
     update_software()
 }
@@ -108,7 +108,7 @@ function install_codecs() {
 # Nvidia drivers
 functions install_nvidia() {
     update_software()
-    sudo dnf install akmod-nvidia -y 
+    sudo dnf install akmod-nvidia -y
 }
 
 # software install
@@ -171,6 +171,8 @@ function main() {
     install_true_type()
     install_codecs()
     install_software()
+    gnome_settings()
+    #laptop_settings()
     #install_nvidia()
 }
 
