@@ -10,6 +10,7 @@ $INSTALL_DIR
 # startup
 function startup() {
     INSTALL_DIR = $pwd
+    sudo dnf install git -y
 }
 
 # sets configs
