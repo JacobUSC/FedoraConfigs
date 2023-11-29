@@ -3,6 +3,15 @@
 # For Fedora Workstation 39
 # version 1.0
 
+# varaibles
+$INSTALL_DIR
+
+
+# startup
+function startup() {
+    INSTALL_DIR = $pwd
+}
+
 # sets configs
 function set_configs() {
     echo "setting configs"
@@ -12,7 +21,7 @@ function set_configs() {
     echo 'defaultyes=true' | sudo tee -a /etc/dnf/dnf.conf
     echo "setting nano configs"
     touch ~/.nanorc
-    echo 'set guidestrip 80' | tee -a ~/.nanorc
+    echo 'set guidestripe 80' | tee -a ~/.nanorc
     echo 'set linenumbers' | tee -a ~/.nanorc
     echo 'set tabstospaces' | tee -a ~/.nanorc
     echo 'set tabsize 4' | tee -a ~/.nanorc
@@ -42,6 +51,27 @@ function update_firmware() {
     sudo fwupdmgr refresh --force
     sudo fwupdmgr get-updates
     sudo fwupdmgr update
+}
+
+# adds wallpapers
+function add_wallpapers() {
+    cp -r ./wallpapers ~/pictures/
+}
+
+# sets terminal colors
+# theme and script code from Gogh
+# website: http://gogh-co.github.io/Gogh
+# github: https://github.com/Gogh-Co/Gogh
+function set_colors() {
+    echo "setting terminal colors"
+    mkdir -p "$HOME/src"
+    cd "$HOME/src"
+    git clone https://github.com/Gogh-Co/Gogh.git gogh
+    cd gogh
+    export TERMINAL=gnome-terminal
+    cd installs
+    ./powershell.sh
+    cd $INSTALL_DIR
 }
 
 # removes Gnome Junk I never use
@@ -108,7 +138,9 @@ function install_codecs() {
 # Nvidia drivers
 functions install_nvidia() {
     update_software()
+    echo "installing nvidia driver"
     sudo dnf install akmod-nvidia -y
+
 }
 
 # software install
@@ -136,16 +168,11 @@ function install_software() {
     sudo dnf install yt-dlp -y
     sudo dnf install obs-studio -y
     sudo dnf install audacity -y
-    sudo dnf install lite-xl -y
     sudo dnf install qbittorrent -y
     sudo dnf install remmina -y
     sudo dnf install steam -y
     sudo dnf install lutris -y
     sudo dnf install wine -y
-    sudo dnf install gnome-tweaks -y
-    sudo dnf install gnome-extensions-app -y
-    sudo dnf install gnome-shell-extension-dash-to-panel -y
-    sudo dnf install gnome-shell-extension-blur-my-shell -y
 }
 
 # Gnome settings
@@ -160,10 +187,13 @@ function laptop_settings() {
 }
 
 function main() {
+    startup()
     set_configs()
     update_software()
     update_firmware()
-    remove_junk()
+    #remove_junk()
+    add_wallpapers()
+    set_colors()
     enable_rpmfusions()
     enable_flathub()
     install_vscode()
@@ -171,9 +201,10 @@ function main() {
     install_true_type()
     install_codecs()
     install_software()
-    gnome_settings()
+    #gnome_settings()
     #laptop_settings()
-    #install_nvidia()
+    install_nvidia()
+    echo "Please Restart the System"
 }
 
 main()
