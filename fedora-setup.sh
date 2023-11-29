@@ -74,16 +74,15 @@ function set_colors() {
     cd $INSTALL_DIR
 }
 
-# removes Gnome Junk I never use
+# removes programs I never use
 function remove_junk() {
     echo "removing Gnome Junk"
-    dnf remove gnome-tour -y
-    dnf remove gnome-maps -y
-    dnf remove gnome-weather -y
-    dnf remove gnome-calendar -y
-    dnf remove gnome-clocks -y
-    dnf remove gnome-contacts -y
-    dnf remove cheese -y
+    dnf remove hexchat -y
+    dnf remove pidgin -y
+    dnf remove thunderbird -y
+    dnf remove transmission -y
+    dnf remove xfburn -y
+    dnf xawtv -y
     dnf autoremove -y
 }
 
@@ -140,7 +139,7 @@ functions install_nvidia() {
     update_software()
     echo "installing nvidia driver"
     sudo dnf install akmod-nvidia -y
-
+    sudo dnf install xorg-x11-drv-nvidia-cuda -y
 }
 
 # software install
@@ -158,7 +157,6 @@ function install_software() {
     sudo dnf install pdfmod -y
     sudo dnf install libreoffice -y
     sudo dnf install vlc -y
-    sudo dnf install mpv -y
     sudo dnf install gimp -y
     sudo dnf install inkscape -y
     sudo dnf install krita -y
@@ -203,7 +201,7 @@ function main() {
     install_software()
     #gnome_settings()
     #laptop_settings()
-    install_nvidia()
+    #install_nvidia()
     echo "Please Restart the System"
 }
 
