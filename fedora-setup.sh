@@ -9,7 +9,7 @@ $INSTALL_DIR
 
 # startup
 function startup() {
-    INSTALL_DIR = $pwd
+    INSTALL_DIR=$(pwd)
     sudo dnf install git -y
 }
 
@@ -90,16 +90,16 @@ function remove_junk() {
 # enables rpm fusions
 function enable_rpmfusions() {
     echo "enabling rpm fusions"
-    sudo dnf install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
-    sudo dnf install https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
-    update_software()
+    sudo dnf install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm -y
+    sudo dnf install https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm -y
+    update_software
 }
 
 # enables flathub
 function enable_flathub() {
     echo "enabling flathub"
     sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-    update_software()
+    update_software
 }
 
 # vscode install
@@ -127,7 +127,7 @@ function install_true_type() {
 # install codecs
 function install_codecs() {
     echo"installing codecs"
-    update_software()
+    update_software
     sudo dnf install gstreamer1-libav gstreamer1-plugins-bad-free
     sudo dnf install gstreamer1-plugins-bad-free gstreamer1-plugins-bad-free-extras
     sudo dnf install gstreamer1-plugins-bad-freeworld gstreamer1-plugins-bad-nonfree
@@ -136,8 +136,8 @@ function install_codecs() {
 }
 
 # Nvidia drivers
-functions install_nvidia() {
-    update_software()
+function install_nvidia() {
+    update_software
     echo "installing nvidia driver"
     sudo dnf install akmod-nvidia -y
     sudo dnf install xorg-x11-drv-nvidia-cuda -y
@@ -146,7 +146,7 @@ functions install_nvidia() {
 # software install
 function install_software() {
     echo "installing software"
-    update_software()
+    update_software
     sudo flatpak install webcord -y
     sudo dnf install google-chrome-stable -y
     sudo dnf install file-roller -y
@@ -154,7 +154,7 @@ function install_software() {
     sudo dnf install neofetch -y
     sudo dnf install p7zip -y
     sudo dnf install p7zip-plugins -y
-    sudo dfn install gparted -y
+    sudo dnf install gparted -y
     sudo dnf install pdfmod -y
     sudo dnf install libreoffice -y
     sudo dnf install vlc -y
@@ -186,24 +186,23 @@ function laptop_settings() {
 }
 
 function main() {
-    startup()
-    set_configs()
-    update_software()
-    update_firmware()
-    #remove_junk()
-    add_wallpapers()
-    set_colors()
-    enable_rpmfusions()
-    enable_flathub()
-    install_vscode()
-    install_prism_luancher()
-    install_true_type()
-    install_codecs()
-    install_software()
-    #gnome_settings()
-    #laptop_settings()
-    #install_nvidia()
+    startup
+    set_configs
+    update_software
+    #remove_junk
+    add_wallpapers
+    set_colors
+    enable_rpmfusions
+    enable_flathub
+    install_vscode
+    install_prism_luancher
+    install_true_type
+    install_codecs
+    install_software
+    #gnome_settings
+    #laptop_settings
+    #install_nvidia
     echo "Please Restart the System"
 }
 
-main()
+main
