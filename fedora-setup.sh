@@ -40,20 +40,20 @@ function set_configs() {
     echo "setting nano configs"
     cd ~
     touch .nanorc
-    echo 'set guidestripe 80' >> ~/.nanorc
-    echo 'set linenumbers' >> ~/.nanorc
-    echo 'set tabstospaces' >> ~/.nanorc
-    echo 'set tabsize 4' >> ~/.nanorc
-    echo 'set backup' >> ~/.nanorc
-    echo 'set autoindent' >> ~/.nanorc
+    echo 'set guidestripe 80' >> .nanorc
+    echo 'set linenumbers' >> .nanorc
+    echo 'set tabstospaces' >> .nanorc
+    echo 'set tabsize 4' >> .nanorc
+    echo 'set backup' >> .nanorc
+    echo 'set autoindent' >> .nanorc
     echo "setting vim configs"
     touch .vimrc
-    echo 'syntax on' >> ~/.vimrc
-    echo 'set ruler' >> ~/.vimrc
-    echo 'set autoindent' >> ~/.vimrc
-    echo 'set number' >> ~/.vimrc
-    echo 'set ignorecase' >> ~/.vimrc
-    echo 'color elflord' >> ~/.vimrc
+    echo 'syntax on' >> .vimrc
+    echo 'set ruler' >> .vimrc
+    echo 'set autoindent' >> .vimrc
+    echo 'set number' >> .vimrc
+    echo 'set ignorecase' >> .vimrc
+    echo 'color elflord' >> .vimrc
     cd $INSTALL_DIR
     end_line
 }
