@@ -206,11 +206,20 @@ function install_nvidia() {
 function install_software() {
     echo "@@ installing software @@"
     repeat 80 '='; echo
-    sudo dnf upgrade -y
+    update_software
     sudo flatpak install webcord -y
+    sudo flatpak install leocad -y 
+    sudo dnf install python3 -y
+    sudo dnf install java-1.8.0-openjdk -y
+    sudo dnf install java-11-openjdk -y
+    sudo dnf install java-latest-openjdk -y
     sudo dnf install google-chrome-stable -y
     sudo dnf install file-roller -y
+    sudo dnf install cmatrix -y
+    sudo dnf install htop -y
     sudo dnf install btop -y
+    sudo dnf install gcc -y
+    sudo dnf install gdb -y
     sudo dnf install neofetch -y
     sudo dnf install p7zip -y
     sudo dnf install p7zip-plugins -y
@@ -218,6 +227,7 @@ function install_software() {
     sudo dnf install pdfmod -y
     sudo dnf install libreoffice -y
     sudo dnf install vlc -y
+    sudo dnf install mpv -y
     sudo dnf install gimp -y
     sudo dnf install inkscape -y
     sudo dnf install krita -y
