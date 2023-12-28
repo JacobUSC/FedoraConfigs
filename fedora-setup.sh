@@ -209,6 +209,8 @@ function install_software() {
     update_software
     sudo flatpak install webcord -y
     sudo flatpak install leocad -y 
+    sudo flatpak install com.valvesoftware.SteamLink -y
+    sudo dnf install gnome-software -y
     sudo dnf install python3 -y
     sudo dnf install java-1.8.0-openjdk -y
     sudo dnf install java-11-openjdk -y
@@ -239,10 +241,11 @@ function install_software() {
     sudo dnf install audacity -y
     sudo dnf install qbittorrent -y
     sudo dnf install remmina -y
-    sudo dnf install steam -y
-    sudo dnf install lutris -y
-    sudo dnf install wine -y
+    #sudo dnf install steam -y
+    #sudo dnf install lutris -y
+    #sudo dnf install wine -y
     sudo dnf install gnome-boxes -y
+    sudo dnf install gnome-software -y
     end_line
 }
 
@@ -261,7 +264,7 @@ function main() {
     #set_colors
     install_chrome
     install_software
-    install_nvidia
+    #install_nvidia
     echo "Please Restart the System"
 }
 
