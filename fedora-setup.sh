@@ -207,15 +207,18 @@ function install_software() {
     echo "@@ installing software @@"
     repeat 80 '='; echo
     update_software
-    sudo flatpak install webcord -y
-    sudo flatpak install leocad -y 
-    sudo flatpak install com.valvesoftware.SteamLink -y
+    flatpak install com.github.tchx84.Flatseal -y
+    flatpak install io.github.spacingbat3.webcord -y
+    flatpak install org.leocad.LeoCAD -y
+    flatpak install org.videolan.VLC -y
+    flatpak install com.vzhd1701.gridplayer -y
+    flatpak install com.valvesoftware.SteamLink -y
     sudo dnf install gnome-software -y
     sudo dnf install python3 -y
     sudo dnf install java-1.8.0-openjdk -y
     sudo dnf install java-11-openjdk -y
+    sudo dnf install java-17-openjdk -y
     sudo dnf install java-latest-openjdk -y
-    sudo dnf install google-chrome-stable -y
     sudo dnf install file-roller -y
     sudo dnf install cmatrix -y
     sudo dnf install htop -y
@@ -228,14 +231,12 @@ function install_software() {
     sudo dnf install gparted -y
     sudo dnf install pdfmod -y
     sudo dnf install libreoffice -y
-    sudo dnf install vlc -y
-    sudo dnf install mpv -y
     sudo dnf install gimp -y
     sudo dnf install inkscape -y
     sudo dnf install krita -y
     sudo dnf install openshot -y
-    sudo dnf install handbrake -y
-    sudo dnf install handbrake-gui -y
+    #sudo dnf install handbrake -y
+    #sudo dnf install handbrake-gui -y
     sudo dnf install yt-dlp -y
     sudo dnf install obs-studio -y
     sudo dnf install audacity -y
@@ -244,7 +245,7 @@ function install_software() {
     #sudo dnf install steam -y
     #sudo dnf install lutris -y
     #sudo dnf install wine -y
-    sudo dnf install gnome-boxes -y
+    #sudo dnf install gnome-boxes -y
     sudo dnf install gnome-software -y
     end_line
 }
@@ -260,7 +261,7 @@ function main() {
     install_vscode
     install_prism_launcher
     install_true_type
-    install_codecs
+    #install_codecs
     #set_colors
     install_chrome
     install_software
