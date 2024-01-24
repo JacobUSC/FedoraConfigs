@@ -172,6 +172,7 @@ function install_true_type() {
 }
 
 # install codecs
+# only use this if you need codecs for a native application
 function install_codecs() {
     echo "@@ installing codecs @@"
     repeat 80 '='; echo
@@ -194,6 +195,7 @@ function install_chrome() {
 }
 
 # Nvidia drivers
+# only install if you have an Nvidia gpu
 function install_nvidia() {
     echo "@@ installing nvidia driver @@"
     repeat 80 '='; echo
@@ -213,16 +215,24 @@ function install_software() {
     flatpak install org.videolan.VLC -y
     flatpak install com.vzhd1701.gridplayer -y
     flatpak install com.valvesoftware.SteamLink -y
+    flatpak install app/fr.handbrake.ghb/x86_64/stable -y
+    flatpak install org.openshot.OpenShot -y
+    flatpak install com.obsproject.Studio -y
+    flatpak install org.prismlauncher.PrismLauncher -y
+    flatpak install org.gimp.GIMP -y
+    flatpak install org.kde.krita  -y
+    flatpak install org.inkscape.Inkscape -y
+    flatpak install org.qbittorrent.qBittorrent -y
+    flatpak install org.remmina.Remmina -y
+    flatpak install org.audacityteam.Audacity -y
     sudo dnf install gnome-software -y
     sudo dnf install python3 -y
-    sudo dnf install java-1.8.0-openjdk -y
-    sudo dnf install java-11-openjdk -y
-    sudo dnf install java-17-openjdk -y
     sudo dnf install java-latest-openjdk -y
     sudo dnf install file-roller -y
     sudo dnf install cmatrix -y
     sudo dnf install htop -y
     sudo dnf install btop -y
+    sudo dnf install qdirstat -y
     sudo dnf install gcc -y
     sudo dnf install gdb -y
     sudo dnf install neofetch -y
@@ -231,22 +241,12 @@ function install_software() {
     sudo dnf install gparted -y
     sudo dnf install pdfmod -y
     sudo dnf install libreoffice -y
-    sudo dnf install gimp -y
-    sudo dnf install inkscape -y
-    sudo dnf install krita -y
-    sudo dnf install openshot -y
-    #sudo dnf install handbrake -y
-    #sudo dnf install handbrake-gui -y
     sudo dnf install yt-dlp -y
-    sudo dnf install obs-studio -y
     sudo dnf install audacity -y
-    sudo dnf install qbittorrent -y
-    sudo dnf install remmina -y
     #sudo dnf install steam -y
     #sudo dnf install lutris -y
     #sudo dnf install wine -y
     #sudo dnf install gnome-boxes -y
-    sudo dnf install gnome-software -y
     end_line
 }
 
@@ -259,7 +259,7 @@ function main() {
     enable_rpmfusions
     enable_flathub
     install_vscode
-    install_prism_launcher
+    #install_prism_launcher
     install_true_type
     #install_codecs
     #set_colors
