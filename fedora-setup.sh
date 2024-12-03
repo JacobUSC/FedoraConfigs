@@ -2,7 +2,7 @@
 # Jacobs's Fedora Linux Setup Script
 # For Fedora Workstation 41 Cinnamon Spin
 # https://fedoraproject.org/spins/cinnamon/download
-# version 1.1
+# version 1.2 beta
 
 # variables
 $INSTALL_DIR
@@ -21,7 +21,7 @@ function end_line() {
 # startup
 function startup() {
     INSTALL_DIR=$(pwd)
-    echo $INSTALL_DIR
+    echo "$INSTALL_DIR"
     sudo dnf install git -y
 }
 
@@ -34,15 +34,17 @@ function set_configs() {
     echo 'fastestmirror=true' | sudo tee -a /etc/dnf/dnf.conf
     echo 'defaultyes=true' | sudo tee -a /etc/dnf/dnf.conf
     echo "setting nano configs"
-    cd ~
+    cd ~ || exit
     touch .nanorc
-    echo 'set guidestripe 80' >>.nanorc
-    echo 'set linenumbers' >>.nanorc
-    echo 'set tabstospaces' >>.nanorc
-    echo 'set tabsize 4' >>.nanorc
-    echo 'set backup' >>.nanorc
-    echo 'set autoindent' >>.nanorc
-    cd $INSTALL_DIR
+    {
+        echo 'set guidestripe 80'
+        echo 'set linenumbers'
+        echo 'set tabstospaces'
+        echo 'set tabsize 4'
+        echo 'set backup'
+        echo 'set autoindent'
+    } >>.nanorc
+    cd "$INSTALL_DIR" || exit
     end_line
 }
 
@@ -61,7 +63,7 @@ function add_wallpapers() {
     repeat
     WALLPAPER_DIR="${INSTALL_DIR}/FedoraConfigs-main/wallpapers"
     echo "adding wallpapers"
-    cp -r $WALLPAPER_DIR ~/Pictures/
+    cp -r "$WALLPAPER_DIR" ~/Pictures/
     end_line
 }
 
