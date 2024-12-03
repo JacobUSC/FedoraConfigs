@@ -9,7 +9,7 @@ $INSTALL_DIR
 
 # prints borders
 repeat() {
-	echo "================================================================================"
+    echo "================================================================================"
 }
 
 # prints borders for the end of a line
@@ -36,20 +36,12 @@ function set_configs() {
     echo "setting nano configs"
     cd ~
     touch .nanorc
-    echo 'set guidestripe 80' >> .nanorc
-    echo 'set linenumbers' >> .nanorc
-    echo 'set tabstospaces' >> .nanorc
-    echo 'set tabsize 4' >> .nanorc
-    echo 'set backup' >> .nanorc
-    echo 'set autoindent' >> .nanorc
-    echo "setting vim configs"
-    touch .vimrc
-    echo 'syntax on' >> .vimrc
-    echo 'set ruler' >> .vimrc
-    echo 'set autoindent' >> .vimrc
-    echo 'set number' >> .vimrc
-    echo 'set ignorecase' >> .vimrc
-    echo 'color elflord' >> .vimrc
+    echo 'set guidestripe 80' >>.nanorc
+    echo 'set linenumbers' >>.nanorc
+    echo 'set tabstospaces' >>.nanorc
+    echo 'set tabsize 4' >>.nanorc
+    echo 'set backup' >>.nanorc
+    echo 'set autoindent' >>.nanorc
     cd $INSTALL_DIR
     end_line
 }
@@ -128,7 +120,7 @@ function install_prism_launcher() {
 
 # install Microsoft True Type fonts
 function install_true_type() {
-    echo "@@ installing True Type fonsts @@"
+    echo "@@ installing True Type fonts @@"
     repeat
     sudo dnf install xorg-x11-font-utils -y
     sudo rpm -i https://downloads.sourceforge.net/project/mscorefonts2/rpms/msttcore-fonts-installer-2.6-1.noarch.rpm
@@ -161,7 +153,8 @@ function install_chrome() {
 # only install if you have an Nvidia gpu
 function install_nvidia() {
     echo "@@ installing nvidia driver @@"
-    repeat 80 '='; echo
+    repeat 80 '='
+    echo
     sudo dnf install akmod-nvidia -y
     sudo dnf install xorg-x11-drv-nvidia-cuda -y
     end_line
@@ -176,6 +169,8 @@ function install_flatpaks() {
     flatpak install org.videolan.VLC -y
     flatpak install com.valvesoftware.SteamLink -y
     flatpak install org.prismlauncher.PrismLauncher -y
+    flatpak install io.freetubeapp.FreeTube -y
+    end_line
 }
 
 # software install
@@ -192,6 +187,7 @@ function install_software() {
     sudo dnf install gdb -y
     sudo dnf install cpplint -y
     sudo dnf install neofetch -y
+    sudo dnf install yaru-icon-theme -y
     sudo dnf install p7zip -y
     sudo dnf install p7zip-plugins -y
     sudo dnf install gparted -y
