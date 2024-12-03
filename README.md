@@ -1,5 +1,5 @@
 # FedoraConfigs
-I created this to automate the post install setup on Fedora spins cinnamon. This only sets up things the way I like. Feel free to fork and change things to your liking. I am working on a more feature rich post install script that will work on many more distros and have selectable options with a GUI.
+I created this to automate the post install setup on Fedora Spins Cinnamon. This only sets up things the way I like. Feel free to fork and change things to your liking.
 <br>
 <br>
 This will run on other desktop environments and distros but is only tested on [Fedora Spins Cinnamon](https://fedoraproject.org/spins/cinnamon/download)
