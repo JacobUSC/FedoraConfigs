@@ -1,8 +1,8 @@
 #!/bin/bash
 # Jacobs's Fedora Linux Setup Script
-# For Fedora Workstation 41 Cinnamon Spin
-# https://fedoraproject.org/spins/cinnamon/download
-# version 1.2 beta
+# For Fedora Workstation 42 XFCE Spin
+# https://fedoraproject.org/spins/xfce
+# version 1.3 beta
 
 # variables
 $INSTALL_DIR
@@ -20,70 +20,63 @@ function end_line() {
 
 # startup
 function startup() {
-    INSTALL_DIR=$(pwd)
-    echo "$INSTALL_DIR"
-    sudo dnf install git -y
+    RUN_DIR=$(pwd)
+    echo "$RUN_DIR"
+    case $RUN_DIR in
+        *"FedoraConfigs-main" | *"FedoraConfigs")
+            echo "correct directory detected running script"
+        ;;
+        *)
+            echo "attempting directory change"
+            cd FedoraConfigs-main || cd FedoraConfigs || echo "directory error! exiting script! open script from the FedoraConfigs directory" exit
+            startup
+        ;;
+    esac
 }
 
 # sets configs
 function set_configs() {
-    echo "@@ setting configs @@"
+    echo "@@ Setting Configs @@"
     repeat
-    echo "setting dnf configs"
-    echo 'max_parallel_downloads=10' | sudo tee -a /etc/dnf/dnf.conf
-    echo 'fastestmirror=true' | sudo tee -a /etc/dnf/dnf.conf
-    echo 'defaultyes=true' | sudo tee -a /etc/dnf/dnf.conf
-    echo "setting nano configs"
-    cd ~ || exit
-    touch .nanorc
-    {
-        echo 'set guidestripe 80'
-        echo 'set linenumbers'
-        echo 'set tabstospaces'
-        echo 'set tabsize 4'
-        echo 'set backup'
-        echo 'set autoindent'
-    } >>.nanorc
-    cd "$INSTALL_DIR" || exit
+    echo "Setting DNF Configs"
+    DNF_CONFIGS=('max_parallel_downloads=10' 'fastestmirror=true' 'defaultyes=true')
+    for CONFIG in "${DNF_CONFIGS[@]}"; do
+        if grep -Fxq "$CONFIG" ~/.nanorc; then
+            echo "Config Already Exists"
+        else
+            echo "$CONFIG" | sudo tee -a /etc/dnf/dnf.conf
+        fi
+    done
+    echo "Setting Nano Configs"
+    NANO_CONFIGS=("set guidestripe 80"
+        "set linenumbers"
+        "set tabstospaces"
+        "set tabsize 4"
+        "set backup"
+        "set autoindent"
+        "set mouse")
+    for CONFIG in "${NANO_CONFIGS[@]}"; do
+        if grep -Fxq "$CONFIG" ~/.nanorc; then
+            echo "Config Already Exists"
+        else
+            echo "$CONFIG" >>~/.nanorc
+        fi
+    done
     end_line
 }
 
 # updates software
 function update_software() {
-    echo "@@ updating software @@"
+    echo "@@ Updating Software @@"
     repeat
     sudo dnf upgrade -y
     sudo flatpak update
     end_line
 }
 
-# adds wallpapers
-function add_wallpapers() {
-    echo "@@ adding wallpapers to Pictures directory @@"
-    repeat
-    WALLPAPER_DIR="${INSTALL_DIR}/FedoraConfigs-main/wallpapers"
-    echo "adding wallpapers"
-    cp -r "$WALLPAPER_DIR" ~/Pictures/
-    end_line
-}
-
-# removes programs I never use
-function remove_junk() {
-    echo "@@ removing junk @@"
-    repeat
-    dnf remove hexchat -y
-    dnf remove pidgin -y
-    dnf remove thunderbird -y
-    dnf remove transmission -y
-    dnf remove xfburn -y
-    dnf remove xawtv -y
-    dnf autoremove -y
-    end_line
-}
-
 # enables rpm fusions
 function enable_rpmfusions() {
-    echo "@@ enabling rpm fusions @@"
+    echo "@@ Enabling RPM Fusions @@"
     repeat
     sudo dnf install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm -y
     sudo dnf install https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm -y
@@ -93,7 +86,7 @@ function enable_rpmfusions() {
 
 # enables flathub
 function enable_flathub() {
-    echo "@@ enabling flathub @@"
+    echo "@@ Enabling Flathub @@"
     repeat
     sudo dnf install flatpak -y
     sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
@@ -102,7 +95,7 @@ function enable_flathub() {
 
 # installs vscode
 function install_vscode() {
-    echo "@@ installing vscode @@"
+    echo "@@ Installing VScode @@"
     repeat
     sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
     sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
@@ -112,8 +105,9 @@ function install_vscode() {
 }
 
 # installs Prism Launcher (Minecraft)
+# depreciated for flatpak
 function install_prism_launcher() {
-    echo "@@ installing Prism Launcher (Minecraft) @@"
+    echo "@@ Installing Prism Launcher (Minecraft) @@"
     repeat
     sudo dnf copr enable g3tchoo/prismlauncher -y
     sudo dnf install prismlauncher -y
@@ -122,7 +116,7 @@ function install_prism_launcher() {
 
 # install Microsoft True Type fonts
 function install_true_type() {
-    echo "@@ installing True Type fonts @@"
+    echo "@@ Installing True Type Fonts @@"
     repeat
     sudo dnf install xorg-x11-font-utils -y
     sudo rpm -i https://downloads.sourceforge.net/project/mscorefonts2/rpms/msttcore-fonts-installer-2.6-1.noarch.rpm
@@ -131,7 +125,7 @@ function install_true_type() {
 
 # installs media codecs
 function install_codecs() {
-    echo "@@ installing codecs @@"
+    echo "@@ Installing Codecs @@"
     repeat
     sudo dnf install gstreamer1-libav gstreamer1-plugins-bad-free -y
     sudo dnf install gstreamer1-plugins-bad-free gstreamer1-plugins-bad-free-extras -y
@@ -143,7 +137,7 @@ function install_codecs() {
 
 #installs chrome
 function install_chrome() {
-    echo "@@ installing google chrome @@"
+    echo "@@ Installing Google Chrome @@"
     repeat
     sudo dnf install fedora-workstation-repositories -y
     sudo dnf config-manager --set-enabled google-chrome
@@ -151,57 +145,97 @@ function install_chrome() {
     end_line
 }
 
-# Nvidia drivers
-# only install if you have an Nvidia gpu
+#install github desktop
+function install_github() {
+    echo "@@ Installing Github Desktop @@"
+    repeat
+    sudo rpm --import https://rpm.packages.shiftkey.dev/gpg.key
+    sudo sh -c 'echo -e "[shiftkey-packages]\nname=GitHub Desktop\nbaseurl=https://rpm.packages.shiftkey.dev/rpm/\nenabled=1\ngpgcheck=1\nrepo_gpgcheck=1\ngpgkey=https://rpm.packages.shiftkey.dev/gpg.key" > /etc/yum.repos.d/shiftkey-packages.repo'
+    sudo dnf install github-desktop -y
+    end_line
+}
+
+# installs Nvidia drivers
 function install_nvidia() {
-    echo "@@ installing nvidia driver @@"
-    repeat 80 '='
-    echo
+    echo "@@ Installing Nvidia Driver @@"
+    repeat
+    #TODO driver checking
+
     sudo dnf install akmod-nvidia -y
     sudo dnf install xorg-x11-drv-nvidia-cuda -y
     end_line
 }
 
-# installs flatpaks
-function install_flatpaks() {
-    echo "@@ installing flatpaks @@"
+# installs zsh and oh-my-zsh
+function install_zsh() {
+    echo "@@ Installing zsh @@"
     repeat
-    update_software
-    flatpak install com.github.tchx84.Flatseal -y
-    flatpak install org.videolan.VLC -y
-    flatpak install com.valvesoftware.SteamLink -y
-    flatpak install org.prismlauncher.PrismLauncher -y
-    flatpak install io.freetubeapp.FreeTube -y
-    end_line
+    sudo dnf install zsh -y
+    echo "@@ Installing oh-my-zsh @@"
+    repeat
+    if test -d ~/.oh-my-zsh; then
+        echo "oh-my-zsh is Already installed"
+    else
+        echo "Installing oh-my-zsh"
+        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    fi
 }
 
-# software install
+# TODO add xnviewmp?
+# installs software from dnf and flatpak
 function install_software() {
-    echo "@@ installing software @@"
+    echo "@@ Installing Software @@"
     repeat
-    update_software
-    sudo dnf install python3 -y
-    sudo dnf install java-latest-openjdk -y
-    sudo dnf install file-roller -y
-    sudo dnf install htop -y
-    sudo dnf install qdirstat -y
-    sudo dnf install gcc -y
-    sudo dnf install gdb -y
-    sudo dnf install cpplint -y
-    sudo dnf install neofetch -y
-    sudo dnf install yaru-icon-theme -y
-    sudo dnf install p7zip -y
-    sudo dnf install p7zip-plugins -y
-    sudo dnf install gparted -y
-    sudo dnf install pdfmod -y
-    sudo dnf install libreoffice -y
-    sudo dnf install yt-dlp -y
-    sudo dnf install audacity -y
-    sudo dnf install steam -y
+    echo "Installing with DNF"
+    PACKAGES=(python3 java-latest-openjdk htop qdirstat gcc gdb cpplint gparted libreoffice yt-dlp audacity steam git ncdu fastfetch openshot)
+    for PACKAGE in "${PACKAGES[@]}"; do
+        sudo dnf install "$PACKAGE" -y
+    done
+    echo "Installing with FLATPAK"
+    FLATPAKS=(com.github.tchx84.Flatseal install org.videolan.VLC install org.prismlauncher.PrismLauncher com.discordapp.Discord fr.handbrake.ghb)
+    for PAK in "${FLATPAKS[@]}"; do
+        flatpak install "$PAK" -y
+    done
+    #sudo dnf install file-roller -y
+    #sudo dnf install yaru-icon-theme -y
+    #sudo dnf install p7zip -y
+    #sudo dnf install p7zip-plugins -y
+    #sudo dnf install pdfmod -y
     end_line
 }
 
-# update firmware
+# installs my scripts
+function install_scripts() {
+    echo "@@ Installing Scripts @@"
+    repeat
+    if test -d ~/scripts; then
+        echo "scripts already installed updating"
+        rm -rf ~/scripts
+    else
+        echo "installing scripts"
+    fi
+    cp -r ./scripts ~/
+    add_alias
+    end_line
+}
+
+# adds alias's for my scripts
+function add_alias() {
+    # alias's update script
+    if grep -Fxq 'alias update="sudo bash ~/scripts/update.sh"' ~/.zshrc; then
+        echo "Already Exists"
+    else
+        echo 'alias update="sudo bash ~/scripts/update.sh"' >>~/.zshrc
+    fi
+    # alias's clean script
+    if grep -Fxq 'alias clean="sudo bash ~/scripts/clean.sh"' ~/.zshrc; then
+        echo "Already Exists"
+    else
+        echo 'alias clean="sudo bash ~/scripts/clean.sh"' >>~/.zshrc
+    fi
+}
+
+# updates firmware
 function update_firmware() {
     echo "@@ updating firmware @@"
     repeat
@@ -216,8 +250,6 @@ function main() {
     startup
     set_configs
     update_software
-    remove_junk
-    add_wallpapers
     enable_rpmfusions
     enable_flathub
     install_vscode
@@ -225,7 +257,6 @@ function main() {
     install_codecs
     install_chrome
     install_software
-    install_flatpaks
     #install_nvidia
     update_firmware
     echo "Please Restart the System"
