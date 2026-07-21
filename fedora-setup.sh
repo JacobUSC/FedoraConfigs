@@ -1,25 +1,25 @@
 #!/bin/bash
 # Jacobs's Fedora Linux Setup Script
-# For Fedora Workstation 42 XFCE Spin
-# https://fedoraproject.org/spins/xfce
-# version 1.3 beta
-
-# variables
-$INSTALL_DIR
+# For Fedora Workstation 44
+# https://fedoraproject.org/
+# version 1.4 beta
 
 # prints borders
-repeat() {
+function repeat ()
+{
     echo "================================================================================"
 }
 
 # prints borders for the end of a line
-function end_line() {
+function end_line ()
+{
     repeat
     echo ""
 }
 
 # startup
-function startup() {
+function startup ()
+{
     RUN_DIR=$(pwd)
     echo "$RUN_DIR"
     case $RUN_DIR in
@@ -28,20 +28,25 @@ function startup() {
         ;;
         *)
             echo "attempting directory change"
-            cd FedoraConfigs-main || cd FedoraConfigs || echo "directory error! exiting script! open script from the FedoraConfigs directory" exit
-            startup
+            if cd FedoraConfigs-main 2>/dev/null || cd FedoraConfigs 2>/dev/null; then
+                startup
+            else
+                echo "directory error! exiting script! open script from the FedoraConfigs directory"
+                exit 1
+            fi
         ;;
     esac
 }
 
 # sets configs
-function set_configs() {
+function set_configs ()
+{
     echo "@@ Setting Configs @@"
     repeat
     echo "Setting DNF Configs"
     DNF_CONFIGS=('max_parallel_downloads=10' 'fastestmirror=true' 'defaultyes=true')
     for CONFIG in "${DNF_CONFIGS[@]}"; do
-        if grep -Fxq "$CONFIG" ~/.nanorc; then
+        if grep -Fxq "$CONFIG" /etc/dnf/dnf.conf 2>/dev/null; then
             echo "Config Already Exists"
         else
             echo "$CONFIG" | sudo tee -a /etc/dnf/dnf.conf
@@ -66,16 +71,18 @@ function set_configs() {
 }
 
 # updates software
-function update_software() {
+function update_software ()
+{
     echo "@@ Updating Software @@"
     repeat
     sudo dnf upgrade -y
-    sudo flatpak update
+    sudo flatpak update -y
     end_line
 }
 
 # enables rpm fusions
-function enable_rpmfusions() {
+function enable_rpmfusions ()
+{
     echo "@@ Enabling RPM Fusions @@"
     repeat
     sudo dnf install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm -y
@@ -85,16 +92,26 @@ function enable_rpmfusions() {
 }
 
 # enables flathub
-function enable_flathub() {
+function enable_flathub ()
+{
     echo "@@ Enabling Flathub @@"
     repeat
     sudo dnf install flatpak -y
     sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+    echo "@@ Removing Fedora Flatpak Repo @@"
+    repeat
+    if flatpak remote-list | awk '{print $1}' | grep -qx fedora; then
+        echo "Removing Fedora flatpak remote"
+        flatpak remote-delete fedora
+    else
+        echo "Fedora flatpak remote not present"
+    fi
     end_line
 }
 
 # installs vscode
-function install_vscode() {
+function install_vscode ()
+{
     echo "@@ Installing VScode @@"
     repeat
     sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
@@ -106,7 +123,8 @@ function install_vscode() {
 
 # installs Prism Launcher (Minecraft)
 # depreciated for flatpak
-function install_prism_launcher() {
+function install_prism_launcher ()
+{
     echo "@@ Installing Prism Launcher (Minecraft) @@"
     repeat
     sudo dnf copr enable g3tchoo/prismlauncher -y
@@ -115,7 +133,8 @@ function install_prism_launcher() {
 }
 
 # install Microsoft True Type fonts
-function install_true_type() {
+function install_true_type ()
+{
     echo "@@ Installing True Type Fonts @@"
     repeat
     sudo dnf install xorg-x11-font-utils -y
@@ -124,19 +143,19 @@ function install_true_type() {
 }
 
 # installs media codecs
-function install_codecs() {
+function install_codecs ()
+{
     echo "@@ Installing Codecs @@"
     repeat
-    sudo dnf install gstreamer1-libav gstreamer1-plugins-bad-free -y
-    sudo dnf install gstreamer1-plugins-bad-free gstreamer1-plugins-bad-free-extras -y
-    sudo dnf install gstreamer1-plugins-bad-freeworld gstreamer1-plugins-bad-nonfree -y
-    sudo dnf install gstreamer1-plugins-good gstreamer1-plugins-ugly lame-libs lame-libs -y
-    sudo dnf group upgrade --with-optional Multimedia --allowerasing -y
+    sudo dnf install libavcodec-freeworld --allowerasing -y
+    sudo dnf swap ffmpeg-free ffmpeg --allowerasing -y
+    sudo dnf install intel-media-driver -y
     end_line
 }
 
 #installs chrome
-function install_chrome() {
+function install_chrome ()
+{
     echo "@@ Installing Google Chrome @@"
     repeat
     sudo dnf install fedora-workstation-repositories -y
@@ -147,18 +166,26 @@ function install_chrome() {
 
 
 # installs Nvidia drivers
-function install_nvidia() {
-    echo "@@ Installing Nvidia Driver @@"
+function install_nvidia ()
+{
+    echo "@@ Checking if Nvidia Driver is needed @@"
     repeat
-    #TODO driver checking
-
-    sudo dnf install akmod-nvidia -y
-    sudo dnf install xorg-x11-drv-nvidia-cuda -y
+    gpu=$(lspci | grep -i nvidia || true)
+    if [[ -n $gpu ]]; then
+        printf 'Nvidia GPU is present:  %s\n' "$gpu"
+        echo "@@ Installing Nvidia Drivers @@"
+        sudo dnf install akmod-nvidia -y
+        sudo dnf install xorg-x11-drv-nvidia-cuda -y
+        sudo dnf install libva-nvidia-driver -y
+    else
+        echo "Nvidia GPU is not present"
+    fi
     end_line
 }
 
 # installs zsh and oh-my-zsh
-function install_zsh() {
+function install_zsh ()
+{
     echo "@@ Installing zsh @@"
     repeat
     sudo dnf install zsh -y
@@ -172,31 +199,27 @@ function install_zsh() {
     fi
 }
 
-# TODO add xnviewmp?
 # installs software from dnf and flatpak
-function install_software() {
+function install_software ()
+{
     echo "@@ Installing Software @@"
     repeat
     echo "Installing with DNF"
-    PACKAGES=(python3 java-latest-openjdk htop qdirstat gcc gdb cpplint gparted libreoffice yt-dlp audacity steam git ncdu fastfetch openshot)
+    PACKAGES=(python3 java-latest-openjdk htop qdirstat gcc gdb cpplint gparted libreoffice yt-dlp audacity steam git ncdu fastfetch obs-studio)
     for PACKAGE in "${PACKAGES[@]}"; do
         sudo dnf install "$PACKAGE" -y
     done
     echo "Installing with FLATPAK"
-    FLATPAKS=(com.github.tchx84.Flatseal install org.videolan.VLC install org.prismlauncher.PrismLauncher com.discordapp.Discord fr.handbrake.ghb)
+    FLATPAKS=(com.github.tchx84.Flatseal org.videolan.VLC org.prismlauncher.PrismLauncher com.discordapp.Discord com.xnview.XnViewMP)
     for PAK in "${FLATPAKS[@]}"; do
-        flatpak install "$PAK" -y
+        flatpak install -y flathub "$PAK" || flatpak install -y "$PAK" || true
     done
-    #sudo dnf install file-roller -y
-    #sudo dnf install yaru-icon-theme -y
-    #sudo dnf install p7zip -y
-    #sudo dnf install p7zip-plugins -y
-    #sudo dnf install pdfmod -y
     end_line
 }
 
 # installs my scripts
-function install_scripts() {
+function install_scripts ()
+{
     echo "@@ Installing Scripts @@"
     repeat
     if test -d ~/scripts; then
@@ -211,7 +234,8 @@ function install_scripts() {
 }
 
 # adds alias's for my scripts
-function add_alias() {
+function add_alias ()
+{
     # alias's update script
     if grep -Fxq 'alias update="sudo bash ~/scripts/update.sh"' ~/.zshrc; then
         echo "Already Exists"
@@ -227,7 +251,8 @@ function add_alias() {
 }
 
 # updates firmware
-function update_firmware() {
+function update_firmware ()
+{
     echo "@@ updating firmware @@"
     repeat
     sudo fwupdmgr get-devices
@@ -237,7 +262,8 @@ function update_firmware() {
     end_line
 }
 
-function main() {
+function main ()
+{
     startup
     set_configs
     update_software
@@ -248,7 +274,7 @@ function main() {
     install_codecs
     install_chrome
     install_software
-    #install_nvidia
+    install_nvidia
     update_firmware
     echo "Please Restart the System"
 }
