@@ -2,7 +2,7 @@
 # Jacobs's Fedora Linux Setup Script
 # For Fedora Workstation 44
 # https://fedoraproject.org/
-# version 1.4 beta
+# version 1.4.1 beta
 
 # prints borders
 function repeat ()
@@ -149,7 +149,18 @@ function install_codecs ()
     repeat
     sudo dnf install libavcodec-freeworld --allowerasing -y
     sudo dnf swap ffmpeg-free ffmpeg --allowerasing -y
-    sudo dnf install intel-media-driver -y
+    # todo check for intel gpu
+    #sudo dnf install intel-media-driver -y
+    end_line
+}
+
+# install topgrade
+function install_topgrade ()
+{
+    echo "@@ Installing Topgrade @@"
+    repeat
+    sudo dnf copr enable lilay/topgrade
+    sudo dnf install topgrade
     end_line
 }
 
@@ -205,12 +216,12 @@ function install_software ()
     echo "@@ Installing Software @@"
     repeat
     echo "Installing with DNF"
-    PACKAGES=(python3 java-latest-openjdk htop qdirstat gcc gdb cpplint gparted libreoffice yt-dlp audacity steam git ncdu fastfetch obs-studio)
+    PACKAGES=(python3 java-latest-openjdk htop qdirstat gcc gdb cpplint gparted libreoffice yt-dlp audacity git ncdu fastfetch obs-studio)
     for PACKAGE in "${PACKAGES[@]}"; do
         sudo dnf install "$PACKAGE" -y
     done
     echo "Installing with FLATPAK"
-    FLATPAKS=(com.github.tchx84.Flatseal org.videolan.VLC org.prismlauncher.PrismLauncher com.discordapp.Discord com.xnview.XnViewMP)
+    FLATPAKS=(com.github.tchx84.Flatseal org.videolan.VLC io.github.celluloid_player.Celluloid org.prismlauncher.PrismLauncher com.xnview.XnViewMP)
     for PAK in "${FLATPAKS[@]}"; do
         flatpak install -y flathub "$PAK" || flatpak install -y "$PAK" || true
     done
@@ -270,12 +281,13 @@ function main ()
     enable_rpmfusions
     enable_flathub
     install_vscode
-    install_true_type
+    #install_true_type
     install_codecs
     install_chrome
     install_software
     install_nvidia
     update_firmware
+    install_zsh
     echo "Please Restart the System"
 }
 
